@@ -172,10 +172,10 @@ document.querySelectorAll('.box').forEach(box => {
             setPiece(box, color, type);
             // addCheckClass();
             switchPlayer();
-            isCheck(box.id);
             delPiece();
+            isCheck(box.id);
             addCaptured(move.curr);
-            checkWinning();
+            // checkWinning();
             removeSuggestion();
         }
     }
@@ -251,7 +251,7 @@ function addCheckClass() {
 }
 
 
-function isKingInCheck(box) {
+function isKingInCheck(box, selectedPiece2 = selectedPiece) {
     document.querySelectorAll('.box').forEach(ele => ele.classList.remove('check'));
     let hasPlaced = false;
     let selectRemove = false;
@@ -268,7 +268,7 @@ function isKingInCheck(box) {
     let opponentMoves = [];
 
 
-    if ((selectedPiece.id === king.id)) {
+    if ((selectedPiece2.id === king.id)) {
         if (box.classList.contains('placed')) {
             box.classList.remove('placed');
             isKing.placeRemoved = true;
@@ -283,7 +283,7 @@ function isKingInCheck(box) {
         if (box.classList.contains('placed')) hasPlaced = true;
         box.classList.add('placed');
     }
-    selectedPiece.classList.remove('placed');
+    selectedPiece2.classList.remove('placed');
     selectRemove = true;
 
 
@@ -333,10 +333,10 @@ function isKingInCheck(box) {
         box.classList.remove('placed');
     };
 
-    if (selectRemove) selectedPiece.classList.add('placed');
+    if (selectRemove) selectedPiece2.classList.add('placed');
 
-    if ((selectedPiece.id === king.id)) {
-        // console.log('selectedPiece.id===king.id');
+    if ((selectedPiece2.id === king.id)) {
+        // console.log('selectedPiece2.id===king.id');
         if (isKing.placeRemoved) {
             box.classList.add('placed');
             box.setAttribute('piece', isKing.attr);
@@ -357,6 +357,7 @@ function isKingInCheck(box) {
 
     for (const piece of nextChecker) {
         // console.log("const piece of nextChecker", piece);
+        if (check && piece == checker && piece.id === box.id) return false;
         if (piece.id === box.id) return false;
     }
 
@@ -427,7 +428,28 @@ function isCheck(id) {
     if (check) {
         // king.classList.add('error');
         checker = $('#' + id);
-    }
+        isCheckmate();
+    } else checker = null;
+
+}
+
+
+function isCheckmate() {
+    let allPieces = document.querySelectorAll(`[piece ^= ${player}]`);
+    let moves2 = 0;
+    let legalmoves = [];
+
+    Array.from(allPieces).forEach(piece => {
+        let moves = getMoves(piece);
+
+        for (const [i, j] of moves) {
+            let bx = $('#box-' + i + '-' + j);
+            if (!isKingInCheck(bx, piece)) { legalmoves.push([i, j]);moves2++};
+        }
+    });
+
+    console.log(legalmoves, moves2)
+    if(moves2 == 0) alert('checkmate')
 
 
 }
