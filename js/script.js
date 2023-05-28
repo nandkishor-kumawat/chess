@@ -354,12 +354,18 @@ function isKingInCheck(box, selectedPiece2 = selectedPiece) {
         return false;
     };
 
-
-    for (const piece of nextChecker) {
-        // console.log("const piece of nextChecker", piece);
-        if (check && piece == checker && piece.id === box.id) return false;
-        if (piece.id === box.id) return false;
+    if (nextChecker.length === 1) {
+        // console.log('1')
+        if (nextChecker[0].id === box.id) return false;
+    } else {
+        for (const piece of nextChecker) {
+            console.log("const piece of nextChecker", piece);
+            if (check && piece == checker && piece.id === box.id) return false;
+            // if (piece.id === box.id) return false;
+        }
     }
+
+
 
     return isPresent;
 }
@@ -444,12 +450,12 @@ function isCheckmate() {
 
         for (const [i, j] of moves) {
             let bx = $('#box-' + i + '-' + j);
-            if (!isKingInCheck(bx, piece)) { legalmoves.push([i, j]);moves2++};
+            if (!isKingInCheck(bx, piece)) { legalmoves.push([i, j]); moves2++ };
         }
     });
 
     console.log(legalmoves, moves2)
-    if(moves2 == 0) alert('checkmate')
+    if (moves2 == 0) alert('checkmate')
 
 
 }
