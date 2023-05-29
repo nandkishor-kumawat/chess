@@ -20,6 +20,35 @@ let promotion = {
 
 localStorage.removeItem('historyMoves');
 
+let gameBoard = [
+    ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
+    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+    ['', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', ''],
+    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+    ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+]
+
+// if (localStorage.getItem('gameBoard')) {
+//     gameBoard = [...JSON.parse(localStorage.getItem('gameBoard'))]
+// }
+
+const gameNomini = {
+    'black-rook': 'R',
+    'white-rook': 'r',
+    'black-knight': 'N',
+    'white-knight': 'n',
+    'black-bishop': 'B',
+    'white-bishop': 'b',
+    'black-queen': 'Q',
+    'white-queen': 'q',
+    'black-king': 'K',
+    'white-king': 'k',
+    'black-pawn': 'P',
+    'white-pawn': 'p'
+}
 
 function setupBoard() {
     board.innerHTML = '';
@@ -32,91 +61,27 @@ function setupBoard() {
 
             div.classList.add(((i + j) % 2 === 0) ? 'light' : 'dark');
 
-            if (i === 0 || i === 7) {
-                div.setAttribute('piece', `${i === 0 ? 'black' : 'white'}-${pcs[j]}`);
+            // if (i === 0 || i === 7) {
+            //     div.setAttribute('piece', `${i === 0 ? 'black' : 'white'}-${pcs[j]}`);
+            //     div.classList.add('placed');
+            // }
+            // if (i === 1 || i === 6) {
+            //     div.setAttribute('piece', `${i === 1 ? 'black' : 'white'}-pawn`);
+            //     div.classList.add('placed');
+            // }
+
+            // if (gameBoard) {
+            if (gameBoard[i][j] !== '') {
+                div.setAttribute('piece', Object.keys(gameNomini).find(key => gameNomini[key] === gameBoard[i][j]))
                 div.classList.add('placed');
             }
-            if (i === 1 || i === 6) {
-                div.setAttribute('piece', `${i === 1 ? 'black' : 'white'}-pawn`);
-                div.classList.add('placed');
-            }
+            // }
+
             board.appendChild(div);
         }
     }
+    $('#currentPlayer').className = player;
 } setupBoard();
-
-
-// document.querySelectorAll('.box').forEach(box => {
-//     box.onclick = async () => {
-//         if (box.classList.contains('selected')) {
-//             removeSelection();
-//             return
-//         }
-
-//         if (!selectedPiece) {
-//             if (box.getAttribute('piece').indexOf(player) >= 0) {
-//                 // if (check) findCheckMoves(box);
-//                 // else selectPiece(box);
-//                 selectPiece(box);
-//                 return
-//             }
-//         }
-
-//         if (selectedPiece) {
-//             let a = selectedPiece.getAttribute('piece').split('-');
-//             let color = a[0];
-//             let type = a[1];
-
-//             if (box.getAttribute('piece').indexOf(color) >= 0) {
-//                 removeSelection();
-//                 selectPiece(box);
-//                 return;
-//             }
-
-//             let ask = isKingInCheck(box);
-//             // console.log(ask);
-
-//             // let apr = new Promise((resolve, reject) => {
-//             //     setTimeout(() => {
-//             //         console.log('first');
-//             //         resolve();
-//             //     }, 2000);
-//             // });
-
-//             // await apr;
-
-//             // return;
-//             if (!ask && box.classList.contains('legal')) {
-//                 if (isPromoting(box, color, type)) await promote(box, color, type);
-//                 setPiece(box, color, type);
-//                 // addCheckClass();
-//                 switchPlayer();
-//                 isCheck(box.id);
-//                 let move = {
-//                     pre: {
-//                         id: selectedPiece.id,
-//                         piece: isPromoting(box, color, type) ? promotion.promote : selectedPiece.getAttribute('piece')
-//                     },
-//                     curr: {
-//                         id: box.id,
-//                         piece: box.getAttribute('piece')
-//                     }
-//                 }
-//                 if (moveNumber === historyMoves.length) {
-//                     historyMoves.push(move);
-//                 } else {
-//                     historyMoves[moveNumber] = move;
-//                 }
-//                 moveNumber++;
-//                 localStorage.setItem('historyMoves', JSON.stringify(historyMoves));
-//                 delPiece();
-//                 addCaptured(move.curr);
-//                 checkWinning();
-//                 removeSuggestion();
-//             }
-//         }
-//     }
-// });
 
 
 document.querySelectorAll('.box').forEach(box => {
@@ -128,8 +93,6 @@ document.querySelectorAll('.box').forEach(box => {
         }
 
         if (box.getAttribute('piece').indexOf(player) >= 0) {
-            // if (check) findLegalMovesInCheck(box);
-            // else selectPiece(box);
             if (selectedPiece) removeSelection();
             selectPiece(box);
             return;
@@ -142,10 +105,6 @@ document.querySelectorAll('.box').forEach(box => {
         let type = a[1];
 
 
-        // let ask = isKingInCheck(box);
-
-
-        // if (!ask && box.classList.contains('legal')) {
         if (box.classList.contains('legal')) {
             if (isPromoting(box, color, type)) await promote(box, color, type);
 
@@ -168,6 +127,7 @@ document.querySelectorAll('.box').forEach(box => {
 
             moveNumber++;
             localStorage.setItem('historyMoves', JSON.stringify(historyMoves));
+            // localStorage.setItem('moveNumber', moveNumber);
 
             setPiece(box, color, type);
             // addCheckClass();
@@ -204,7 +164,7 @@ $('#undo').onclick = () => {
     switchPlayer();
     if (selectedPiece) removeSelection();
     // console.log(historyMoves, moveNumber);
-    localStorage.setItem('historyMoves', JSON.stringify(historyMoves));
+    // localStorage.setItem('historyMoves', JSON.stringify(historyMoves));
 }
 
 
@@ -224,7 +184,7 @@ $('#redo').onclick = () => {
     if (selectedPiece) removeSelection();
     moveNumber++;
     // console.log(historyMoves, moveNumber);
-    localStorage.setItem('historyMoves', JSON.stringify(historyMoves));
+    // localStorage.setItem('historyMoves', JSON.stringify(historyMoves));
 }
 
 
@@ -249,6 +209,7 @@ function addCheckClass() {
         }
     });
 }
+
 
 
 function isKingInCheck(box, selectedPiece2 = selectedPiece) {
@@ -371,49 +332,6 @@ function isKingInCheck(box, selectedPiece2 = selectedPiece) {
 }
 
 
-function findLegalMovesInCheck(box) {
-    let a = box.getAttribute('piece').split('-');
-    let color = a[0];
-    let type = a[1];
-
-    let [i, j] = getPos(box.id);
-
-    // console.log(box);
-    // console.log(getMoves(box));
-
-    // let allPieces = document.querySelectorAll(`[piece^=${player}]`);
-    // let hasMoves = Array.from(allPieces).filter(box => getMoves(box).length > 0)
-
-    // for (const piece of hasMoves) {
-    //     let checkerMoves = getMoves(checker);
-    //     let pieceMoves = getMoves(piece);
-
-    //     console.log(pieceMoves,checkerMoves);
-    // }
-
-    if (box.getAttribute('piece').includes('king')) {
-        // console.log('king');
-        return;
-    }
-
-    let checkerMoves = getMoves(checker);
-    let pieceMoves = getMoves(box);
-    let legalCheckMoves = [];
-    let checkerPos = getPos(checker.id);
-
-    const isCapturing = JSON.stringify(pieceMoves).includes(JSON.stringify(checkerPos));
-    if (isCapturing) legalCheckMoves.push(checkerPos);
-
-    for (const move of pieceMoves) {
-        const present = JSON.stringify(checkerMoves).includes(JSON.stringify(move));
-        if (present) legalCheckMoves.push(move);
-    }
-    // console.log(legalCheckMoves);
-    findLegalMoves(legalCheckMoves);
-    // console.log(JSON.stringify(pieceMoves), JSON.stringify(checkerMoves));
-}
-
-
 function getPos(id) {
     let b = id.split('-');
     let i = parseInt(b[1]);
@@ -430,19 +348,20 @@ function isCheck(id) {
     let kingPos = getPos(king.id);
 
     check = JSON.stringify(moves).includes(JSON.stringify(kingPos));
-
+    // localStorage.setItem('check', check);
     if (check) {
         // king.classList.add('error');
         checker = $('#' + id);
         isCheckmate();
-    } else checker = null;
+    } else {
+        checker = null;
+    };
 
 }
 
 
-function isCheckmate() {
+function getAllPossibleMoves() {
     let allPieces = document.querySelectorAll(`[piece ^= ${player}]`);
-    let moves2 = 0;
     let legalmoves = [];
 
     Array.from(allPieces).forEach(piece => {
@@ -450,22 +369,30 @@ function isCheckmate() {
 
         for (const [i, j] of moves) {
             let bx = $('#box-' + i + '-' + j);
-            if (!isKingInCheck(bx, piece)) { legalmoves.push([i, j]); moves2++ };
+            if (!isKingInCheck(bx, piece)) { legalmoves.push([i, j]) };
         }
     });
+    return legalmoves;
+}
 
-    console.log(legalmoves, moves2)
-    if (moves2 == 0) alert('checkmate')
+
+function isCheckmate() {
+    let legalmoves = getAllPossibleMoves();
+
+    if (legalmoves.length == 0) alert('checkmate');
+}
 
 
+function isStalemate() {
+    let legalmoves = getAllPossibleMoves();
+    if (legalmoves.length == 0) alert('Stalemate');
 }
 
 
 function selectPiece(box) {
     box.classList.add('selected');
     selectedPiece = box;
-    // check ? findLegalMovesInCheck(box) : findLegalMoves(getMoves(selectedPiece));
-    // findLegalMoves(getMoves(selectedPiece));
+
     let legalmoves = [];
     let moves = getMoves(selectedPiece);
 
@@ -473,7 +400,7 @@ function selectPiece(box) {
         let bx = $('#box-' + i + '-' + j);
         if (!isKingInCheck(bx)) legalmoves.push([i, j]);
     }
-    // console.log(legalmoves);
+
     findLegalMoves(legalmoves);
 }
 
@@ -523,9 +450,23 @@ function promote(box, color, type) {
 }
 
 
+function addToBoard(box, color, piece) {
+    const [fi, fj] = getPos(selectedPiece.id);
+    const [ti, tj] = getPos(box.id);
+    gameBoard[fi][fj] = '';
+    gameBoard[ti][tj] = gameNomini[piece];
+
+    console.table(gameBoard);
+    localStorage.setItem('gameBoard', JSON.stringify(gameBoard));
+}
+
 function setPiece(box, color, type) {
-    box.setAttribute('piece', isPromoting(box, color, type) ? promotion.promote : `${color}-${type}`);
+    let piece = isPromoting(box, color, type) ? promotion.promote : `${color}-${type}`
+    box.setAttribute('piece', piece);
     box.classList.add('placed');
+    if (!check) isStalemate();
+
+    // addToBoard(box, color, piece);
 }
 
 
@@ -560,8 +501,8 @@ function updatePiece() {
 
 
 function findLegalMoves(nextMoves) {
-    for (let move of nextMoves) {
-        let box = $('#box-' + move[0] + '-' + move[1]);
+    for (let [i, j] of nextMoves) {
+        let box = $('#box-' + i + '-' + j);
         box.classList.add('legal');
         if (suggestion) box.classList.add('show');
     }
@@ -748,9 +689,13 @@ function switchPlayer() {
     //     player = 'white'
     // }
     $('#currentPlayer').className = player;
+    // localStorage.setItem('player', player);
 }
 
 
 function $(c) {
     return document.querySelector(c);
+}
+function _(id) {
+    return document.getElementById(id);
 }
