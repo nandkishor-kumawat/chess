@@ -310,23 +310,23 @@ function isKingInCheck(box, selectedPiece2 = selectedPiece) {
         return box.classList.contains('check');
     };
 
-    if (check && (box.id === checker.id)) {
-        // console.log('check && (box.id === checker.id)');
-        return false;
-    };
-
     if (nextChecker.length === 1) {
         // console.log('1')
         if (nextChecker[0].id === box.id) return false;
     } else {
         for (const piece of nextChecker) {
             console.log("const piece of nextChecker", piece);
-            if (check && piece == checker && piece.id === box.id) return false;
+            if (check && piece == checker && piece.id === box.id) {
+                return false;
+            }
             // if (piece.id === box.id) return false;
         }
     }
 
-
+    if (check && (box.id === checker.id)) {
+        console.log('check && (box.id === checker.id)');
+        return false;
+    };
 
     return isPresent;
 }
@@ -379,7 +379,7 @@ function getAllPossibleMoves() {
 function isCheckmate() {
     let legalmoves = getAllPossibleMoves();
 
-    if (legalmoves.length == 0) alert('checkmate');
+    if (legalmoves.length == 0) alert(`checkmate ${player === 'white' ? 'black' : 'white'} has won`);
 }
 
 
@@ -401,7 +401,7 @@ function selectPiece(box) {
         if (!isKingInCheck(bx)) legalmoves.push([i, j]);
     }
 
-    findLegalMoves(legalmoves);
+    addLegalClass(legalmoves);
 }
 
 
@@ -500,7 +500,7 @@ function updatePiece() {
 }
 
 
-function findLegalMoves(nextMoves) {
+function addLegalClass(nextMoves) {
     for (let [i, j] of nextMoves) {
         let box = $('#box-' + i + '-' + j);
         box.classList.add('legal');
