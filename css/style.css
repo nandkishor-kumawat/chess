@@ -15,6 +15,7 @@ body {
     align-items: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     user-select: none;
+    background-color: #074b21;
 }
 
 main {
@@ -39,8 +40,8 @@ main {
 
 #currentPlayer {
     display: inline-block;
-    width: calc((var(--size)) / 10);
-    height: calc((var(--size)) / 10);
+    width: calc((var(--size)) / 12);
+    height: calc((var(--size)) / 12);
     background-size: cover !important;
 }
 
@@ -114,11 +115,9 @@ main {
     grid-template-columns: repeat(8, calc((var(--size)) / 8));
     grid-template-rows: repeat(8, calc((var(--size)) / 8));
     box-shadow: 0 0 0 10px rgb(0 0 0 /25%);
+    box-shadow: 0 0 0 10px rgb(16 146 81 / 75%);
 }
 
-.legal.show {
-    box-shadow: inset 0 0 5px 2px #25a158;
-}
 
 .box {
     width: 100%;
@@ -128,15 +127,17 @@ main {
 
 .box.light {
     background-color: #fff;
+    background-color: #a5e9b7;
 }
 
 .box.dark {
     background-color: #d3d3d3;
+    background-color: #3ab464;
 }
 
 .selected {
-    background-color: yellow !important;
     background-color: #00ceff !important;
+    background-color: #bce23fe6 !important;
 }
 
 .box.error {
@@ -204,15 +205,17 @@ main {
     background: url(../img/wp.png);
 }
 
-.box.check {
+
+.legal.show {
     position: relative;
 }
 
-.box.check::after {
+
+.legal.show::after {
     position: absolute;
-    /* content: ''; */
-    width: 15px;
-    height: 15px;
+    content: '';
+    width: 20px;
+    height: 20px;
     background-color: red;
     border-radius: 50%;
     left: 50%;
@@ -220,11 +223,21 @@ main {
     transform: translate(-50%, -50%);
 }
 
+.legal.show::after {
+    background: #e9ff00;
+    box-shadow: 0 0 5px #e9ff00, 0 0 10px #e9ff00;
+}
+
+.legal.show.placed::after {
+    background: red;
+    box-shadow: 0 0 5px red, 0 0 10px red;
+}
+
 /* .box.placed {
     box-shadow: inset 0px 0px 4px 1px #00ff6a;
 } */
 
-#promotion{
+#promotion {
     display: none;
     position: absolute;
     left: 50%;
@@ -233,8 +246,8 @@ main {
     z-index: 999;
 }
 
-#promotion >*{
-    width:50px;
+#promotion>* {
+    width: 50px;
     height: 50px;
     background-size: cover !important;
 }
